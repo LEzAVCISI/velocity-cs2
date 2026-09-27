@@ -25,7 +25,6 @@ jobs:
 
       - name: Build DLL (Ship config)
         run: |
-          cd velocity-cs2
           msbuild velocity-cs2.slnx /p:Configuration=Ship /p:Platform=x64 /m
 
       - name: Build Loader (single file exe)
