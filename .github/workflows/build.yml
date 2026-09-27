@@ -25,6 +25,7 @@ jobs:
 
       - name: Build DLL (Ship config)
         run: |
+          cd velocity-cs2
           msbuild velocity-cs2.slnx /p:Configuration=Ship /p:Platform=x64 /m
 
       - name: Build Loader (single file exe)
@@ -37,6 +38,6 @@ jobs:
         with:
           name: velocity-cs2-build
           path: |
-            velocity-cs2/bin/cs2.dll
+            bin/cs2.dll
             loader/bin/Release/net9.0-windows/win-x64/publish/loader.exe
           retention-days: 7
