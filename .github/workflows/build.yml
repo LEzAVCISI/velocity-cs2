@@ -1,0 +1,40 @@
+name: Build Velocity CS2
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg\vcpkg install freetype:x64-windows-static
+
+      - name: Build DLL (Ship config)
+        run: |
+          cd velocity-cs2
+          msbuild velocity-cs2.slnx /p:Configuration=Ship /p:Platform=x64 /m
+
+      - name: Build Loader (single file exe)
+        run: |
+          cd loader
+          dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: velocity-cs2-build
+          path: |
+            velocity-cs2/bin/cs2.dll
+            loader/bin/Release/net9.0-windows/win-x64/publish/loader.exe
+          retention-days: 7
